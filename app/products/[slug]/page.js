@@ -76,6 +76,29 @@ export default async function ProductDetailPage({ params }) {
         </div>
       </section>
 
+      {product.gallery?.length ? (
+        <section className="section product-gallery-section">
+          <div className="section-heading section-contained">
+            <p className="eyebrow">Product images</p>
+            <h2>Real project references and generated product visuals.</h2>
+          </div>
+          <div className="product-gallery section-contained">
+            {product.gallery.map((image, index) => (
+              <figure className={index === 0 ? "feature" : ""} key={image.src}>
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={index === 0 ? 1200 : 720}
+                  height={index === 0 ? 800 : 540}
+                  sizes={index === 0 ? "(max-width: 980px) 100vw, 50vw" : "(max-width: 980px) 50vw, 25vw"}
+                />
+                <figcaption>{image.alt}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section className="section band">
         <div className="section-heading split">
           <div>

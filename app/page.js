@@ -20,7 +20,7 @@ export default function HomePage() {
           <p className="eyebrow">LED strips, bulbs, and decorative lighting</p>
           <h1>Affordable LED lighting for polished commercial interiors.</h1>
           <p className="hero-copy">
-            Simlux Technology supplies quality LED strips, bulbs, and decorative lighting for
+            Simlux Technology Limited supplies quality LED strips, bulbs, and decorative lighting for
             offices, retail spaces, hospitality interiors, and indoor decoration projects.
           </p>
           <div className="hero-actions">

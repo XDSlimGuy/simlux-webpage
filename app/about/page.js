@@ -5,7 +5,7 @@ import { ArrowRight, BadgeDollarSign, Building2, Lightbulb, ShieldCheck } from "
 export const metadata = {
   title: "About",
   description:
-    "Learn about Simlux Technology, an LED supplier focused on affordable quality lighting for indoor decoration and commercial spaces.",
+    "Learn about Simlux Technology Limited, an LED supplier focused on affordable quality lighting for indoor decoration and commercial spaces.",
 };
 
 export default function AboutPage() {
@@ -16,7 +16,7 @@ export default function AboutPage() {
           <p className="eyebrow">About Simlux</p>
           <h1>Supplying LED lighting that helps interiors look better without stretching the budget.</h1>
           <p>
-            Simlux Technology sells LED strips, bulbs, and decorative lighting products for companies,
+            Simlux Technology Limited sells LED strips, bulbs, and decorative lighting products for companies,
             contractors, shops, hospitality spaces, and indoor decoration projects.
           </p>
         </div>
@@ -36,7 +36,7 @@ export default function AboutPage() {
         </div>
         <div className="story-copy">
           <p>
-            Simlux Technology supports customers who need dependable LED products for interior spaces.
+            Simlux Technology Limited supports customers who need dependable LED products for interior spaces.
             The company focuses on practical lighting categories that are used often in commercial
             decoration: flexible LED strips, efficient LED bulbs, and clean decorative lighting options.
           </p>

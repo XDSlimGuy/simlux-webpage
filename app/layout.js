@@ -1,6 +1,7 @@
 import "./globals.css";
+import Image from "next/image";
 import Link from "next/link";
-import { Mail, Menu, Zap } from "lucide-react";
+import { Globe2, Mail, Phone } from "lucide-react";
 import { Inter, Sora } from "next/font/google";
 
 const inter = Inter({
@@ -17,15 +18,16 @@ const sora = Sora({
 
 export const metadata = {
   title: {
-    default: "Simlux Technology | Affordable Quality LED Lighting",
-    template: "%s | Simlux Technology",
+    default: "Simlux Technology Limited | Affordable Quality LED Lighting",
+    template: "%s | Simlux Technology Limited",
   },
   description:
-    "Simlux Technology supplies affordable quality LED strips, LED bulbs, and decorative LED lighting for indoor decoration and commercial spaces.",
+    "Simlux Technology Limited supplies affordable quality LED strips, LED bulbs, and decorative LED lighting for indoor decoration and commercial spaces.",
   openGraph: {
-    title: "Simlux Technology",
+    title: "Simlux Technology Limited",
     description:
       "Affordable quality LED products for indoor decoration, company interiors, and commercial lighting projects.",
+    url: "https://www.simluxled.com",
     type: "website",
   },
 };
@@ -42,18 +44,24 @@ export default function RootLayout({ children }) {
     <html lang="en" data-scroll-behavior="smooth">
       <body className={`${inter.variable} ${sora.variable}`}>
         <header className="site-header">
-          <Link className="brand" href="/" aria-label="Simlux Technology home">
-            <span className="brand-mark">
-              <Zap size={20} aria-hidden="true" />
-            </span>
+          <Link className="brand" href="/" aria-label="Simlux Technology Limited home">
+            <Image
+              className="brand-logo-image"
+              src="/brand/simlux-full-transparent.png"
+              alt=""
+              width={581}
+              height={527}
+              priority
+            />
             <span>
-              <strong>Simlux</strong>
-              <small>Technology</small>
+              <strong>Technology Limited</strong>
             </span>
           </Link>
           <input className="nav-toggle" id="nav-toggle" type="checkbox" aria-label="Toggle navigation" />
-          <label className="menu-button" htmlFor="nav-toggle" title="Menu">
-            <Menu size={22} aria-hidden="true" />
+          <label className="menu-button" htmlFor="nav-toggle" title="Menu" aria-label="Toggle navigation menu">
+            <span />
+            <span />
+            <span />
           </label>
           <nav className="site-nav" aria-label="Main navigation">
             {navItems.map((item) => (
@@ -68,13 +76,30 @@ export default function RootLayout({ children }) {
           </Link>
         </header>
         <main id="main-content">{children}</main>
+        <div className="viewport-fade viewport-fade-top" aria-hidden="true" />
+        <div className="viewport-fade viewport-fade-bottom" aria-hidden="true" />
         <footer className="site-footer">
           <div>
-            <strong>Simlux Technology</strong>
+            <strong>Simlux Technology Limited</strong>
             <p>Affordable quality LED lighting for indoor decoration and commercial spaces.</p>
           </div>
           <div className="footer-links">
-            <a href="mailto:sales@simluxtechnology.com">sales@simluxtechnology.com</a>
+            <a href="mailto:simlux01@outlook.com">
+              <Mail size={16} aria-hidden="true" />
+              simlux01@outlook.com
+            </a>
+            <a href="tel:+85293485095">
+              <Phone size={16} aria-hidden="true" />
+              +852 93485095
+            </a>
+            <a href="tel:+8613164705570">
+              <Phone size={16} aria-hidden="true" />
+              +86 13164705570
+            </a>
+            <a href="https://www.simluxled.com">
+              <Globe2 size={16} aria-hidden="true" />
+              www.simluxled.com
+            </a>
             <Link href="/products">Product catalog</Link>
             <Link href="/contact">Contact form</Link>
           </div>

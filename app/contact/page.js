@@ -1,10 +1,10 @@
 import ContactForm from "./contact-form";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Globe2, Mail, MapPin, Phone } from "lucide-react";
 
 export const metadata = {
   title: "Contact",
   description:
-    "Contact Simlux Technology for LED strips, LED bulbs, decorative LED lighting, pricing, and product inquiries.",
+    "Contact Simlux Technology Limited for LED strips, LED bulbs, decorative LED lighting, pricing, and product inquiries.",
 };
 
 export default async function ContactPage({ searchParams }) {
@@ -27,9 +27,21 @@ export default async function ContactPage({ searchParams }) {
 
         <aside className="contact-panel">
           <h2>Direct contact</h2>
-          <a href="mailto:sales@simluxtechnology.com">
+          <a href="mailto:simlux01@outlook.com">
             <Mail size={20} aria-hidden="true" />
-            sales@simluxtechnology.com
+            simlux01@outlook.com
+          </a>
+          <a href="tel:+85293485095">
+            <Phone size={20} aria-hidden="true" />
+            +852 93485095
+          </a>
+          <a href="tel:+8613164705570">
+            <Phone size={20} aria-hidden="true" />
+            +86 13164705570
+          </a>
+          <a href="https://www.simluxled.com">
+            <Globe2 size={20} aria-hidden="true" />
+            www.simluxled.com
           </a>
           <p>
             For a faster quotation, include product type, color temperature, estimated quantity,
@@ -37,12 +49,8 @@ export default async function ContactPage({ searchParams }) {
           </p>
           <div className="contact-muted">
             <span>
-              <Phone size={18} aria-hidden="true" />
-              Phone number to be added
-            </span>
-            <span>
               <MapPin size={18} aria-hidden="true" />
-              Company address to be added
+              RM1007, 10F, Sterling CTR, Cheung Yue St., Lai Chi Kok, Hong Kong
             </span>
           </div>
         </aside>
