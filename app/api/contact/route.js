@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
+import { Resend } from "resend";
 
 const requiredFields = ["name", "company", "email", "message"];
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const contactToEmail = process.env.CONTACT_TO_EMAIL || "sales@simluxled.com";
+const contactFromEmail = process.env.CONTACT_FROM_EMAIL || "Simlux Website <website@simluxled.com>";
 
 export async function POST(request) {
   let payload;
@@ -30,32 +33,24 @@ export async function POST(request) {
     message: payload.message.trim(),
   };
 
-  const emailConfigured =
-    Boolean(process.env.RESEND_API_KEY) &&
-    Boolean(process.env.CONTACT_TO_EMAIL) &&
-    Boolean(process.env.CONTACT_FROM_EMAIL);
+  const emailConfigured = Boolean(process.env.RESEND_API_KEY);
 
   if (!emailConfigured) {
     console.info("Prototype contact inquiry received:", inquiry);
     return NextResponse.json({ ok: true, emailConfigured: false });
   }
 
-  const emailResponse = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: process.env.CONTACT_FROM_EMAIL,
-      to: [process.env.CONTACT_TO_EMAIL],
-      reply_to: inquiry.email,
-      subject: `New Simlux inquiry from ${inquiry.company}`,
-      text: formatInquiry(inquiry),
-    }),
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const { error } = await resend.emails.send({
+    from: contactFromEmail,
+    to: [contactToEmail],
+    replyTo: inquiry.email,
+    subject: `New Simlux inquiry from ${inquiry.company}`,
+    text: formatInquiry(inquiry),
   });
 
-  if (!emailResponse.ok) {
+  if (error) {
+    console.error("Resend contact email failed:", error);
     return NextResponse.json(
       { error: "The inquiry could not be emailed. Please try direct email instead." },
       { status: 502 }

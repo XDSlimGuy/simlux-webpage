@@ -48,7 +48,7 @@ export default function ContactForm({ initialProduct = "" }) {
       });
       setForm({ ...initialState, productInterest: "" });
     } catch (error) {
-      setStatus({ type: "error", message: "The form could not be submitted. Please email us directly." });
+      setStatus({ type: "error", message: "The form could not be submitted. Please email sales@simluxled.com directly." });
     } finally {
       setIsSubmitting(false);
     }

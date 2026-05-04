@@ -1,6 +1,7 @@
 import "./globals.css";
 import Image from "next/image";
 import Link from "next/link";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Globe2, Mail, Phone } from "lucide-react";
 import { Inter, Sora } from "next/font/google";
 
@@ -78,15 +79,16 @@ export default function RootLayout({ children }) {
         <main id="main-content">{children}</main>
         <div className="viewport-fade viewport-fade-top" aria-hidden="true" />
         <div className="viewport-fade viewport-fade-bottom" aria-hidden="true" />
+        <SpeedInsights />
         <footer className="site-footer">
           <div>
             <strong>Simlux Technology Limited</strong>
             <p>Affordable quality LED lighting for indoor decoration and commercial spaces.</p>
           </div>
           <div className="footer-links">
-            <a href="mailto:simlux01@outlook.com">
+            <a href="mailto:sales@simluxled.com">
               <Mail size={16} aria-hidden="true" />
-              simlux01@outlook.com
+              sales@simluxled.com
             </a>
             <a href="tel:+85293485095">
               <Phone size={16} aria-hidden="true" />
