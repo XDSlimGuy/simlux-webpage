@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, BadgeCheck, Building2, Lightbulb, Ruler, Sparkles, SunMedium } from "lucide-react";
+import { ArrowRight, BadgeCheck, Building2, Lightbulb, Play, Ruler, Sparkles, SunMedium } from "lucide-react";
 import { categories, products } from "@/lib/products";
 
 export default function HomePage() {
@@ -69,6 +69,39 @@ export default function HomePage() {
             <h3>Affordable supply</h3>
             <p>Cost-conscious LED solutions for companies that need good lighting without overspending.</p>
           </article>
+        </div>
+      </section>
+
+      <section className="section video-showcase">
+        <div className="section-contained video-showcase-grid">
+          <div className="video-showcase-copy">
+            <p className="eyebrow">Lighting preview</p>
+            <h2>See how Simlux LED products shape a modern interior.</h2>
+            <p>
+              A short visual walkthrough of office lighting, decorative LED profiles, neon accents,
+              and product options for commercial decoration projects.
+            </p>
+            <Link className="text-link" href="/products">
+              Explore products <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
+          <div className="video-frame">
+            <video
+              src="/videos/simlux-demo-video.mp4"
+              poster="/products/generated-flex-neon-showroom.png"
+              autoPlay
+              muted
+              loop
+              playsInline
+              controls
+              preload="metadata"
+              aria-label="Simlux LED lighting demo video"
+            />
+            <div className="video-badge" aria-hidden="true">
+              <Play size={16} fill="currentColor" />
+              Demo video
+            </div>
+          </div>
         </div>
       </section>
 
