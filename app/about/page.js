@@ -21,10 +21,10 @@ export default function AboutPage() {
           </p>
         </div>
         <Image
-          src="https://images.unsplash.com/photo-1558882224-dda166733046?auto=format&fit=crop&w=1100&q=80"
-          alt="Warm interior LED lighting"
-          width={1100}
-          height={880}
+          src="/about/led-lighting-showroom.png"
+          alt="LED lighting showroom with decorative strips, linear profiles, and accent lighting"
+          width={1792}
+          height={1024}
           sizes="(max-width: 980px) 100vw, 44vw"
         />
       </section>
