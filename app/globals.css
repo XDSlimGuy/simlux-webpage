@@ -1144,10 +1144,22 @@ p {
 
 .contact-panel a,
 .contact-muted span,
+.footer-links span,
 .footer-links a {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.contact-muted span {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
+  line-height: 1.45;
+}
+
+.contact-muted svg {
+  margin-top: 2px;
 }
 
 .contact-panel a {
@@ -1191,7 +1203,8 @@ p {
   font-weight: 850;
 }
 
-.footer-links a {
+.footer-links a,
+.footer-links span {
   justify-content: end;
   transition: color 180ms ease, transform 180ms var(--ease-spring);
 }
