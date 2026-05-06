@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, BadgeCheck, Building2, Lightbulb, Play, Ruler, Sparkles, SunMedium } from "lucide-react";
+import { ArrowRight, BadgeCheck, Building2, Lightbulb, Ruler, Sparkles, SunMedium } from "lucide-react";
 import { categories, products } from "@/lib/products";
 
 export default function HomePage() {
@@ -97,10 +97,6 @@ export default function HomePage() {
               preload="metadata"
               aria-label="Simlux LED lighting demo video"
             />
-            <div className="video-badge" aria-hidden="true">
-              <Play size={16} fill="currentColor" />
-              Demo video
-            </div>
           </div>
         </div>
       </section>

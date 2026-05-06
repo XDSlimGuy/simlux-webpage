@@ -585,24 +585,6 @@ p {
   border-radius: calc(var(--radius) - 2px);
 }
 
-.video-badge {
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 38px;
-  padding: 0 13px;
-  color: #10191d;
-  background: var(--glow);
-  border-radius: var(--radius);
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.24);
-  font-size: 0.82rem;
-  font-weight: 950;
-}
-
 .section-heading {
   max-width: 820px;
   margin-bottom: 34px;
@@ -1387,11 +1369,6 @@ p {
 
   .hero {
     min-height: 760px;
-  }
-
-  .video-badge {
-    top: 18px;
-    left: 18px;
   }
 
   .hero-content {
