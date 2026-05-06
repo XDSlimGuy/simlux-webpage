@@ -17,33 +17,48 @@ export default function HomePage() {
           />
         </div>
         <div className="hero-content">
-          <p className="eyebrow">LED strips, bulbs, and decorative lighting</p>
-          <h1>Affordable LED lighting for polished commercial interiors.</h1>
-          <p className="hero-copy">
-            Simlux Technology Limited supplies quality LED strips, bulbs, and decorative lighting for
-            offices, retail spaces, hospitality interiors, and indoor decoration projects.
-          </p>
-          <div className="hero-actions">
-            <Link className="button primary" href="/products">
-              View products <ArrowRight size={18} aria-hidden="true" />
-            </Link>
-            <Link className="button secondary" href="/contact">
-              Contact sales
-            </Link>
+          <div className="hero-copy-block">
+            <p className="eyebrow">LED strips, bulbs, and decorative lighting</p>
+            <h1>Affordable LED lighting for polished commercial interiors.</h1>
+            <p className="hero-copy">
+              Simlux Technology Limited supplies quality LED strips, bulbs, and decorative lighting for
+              offices, retail spaces, hospitality interiors, and indoor decoration projects.
+            </p>
+            <div className="hero-actions">
+              <Link className="button primary" href="/products">
+                View products <ArrowRight size={18} aria-hidden="true" />
+              </Link>
+              <Link className="button secondary" href="/contact">
+                Contact sales
+              </Link>
+            </div>
+            <div className="hero-metrics" aria-label="Simlux product strengths">
+              <span>
+                <strong>Indoor</strong>
+                Decoration focus
+              </span>
+              <span>
+                <strong>LED</strong>
+                Strips and bulbs
+              </span>
+              <span>
+                <strong>Value</strong>
+                Quality at fair cost
+              </span>
+            </div>
           </div>
-          <div className="hero-metrics" aria-label="Simlux product strengths">
-            <span>
-              <strong>Indoor</strong>
-              Decoration focus
-            </span>
-            <span>
-              <strong>LED</strong>
-              Strips and bulbs
-            </span>
-            <span>
-              <strong>Value</strong>
-              Quality at fair cost
-            </span>
+          <div className="hero-video-panel">
+            <video
+              src="/videos/simlux-demo-video.mp4"
+              poster="/products/generated-flex-neon-showroom.png"
+              autoPlay
+              muted
+              loop
+              playsInline
+              controls
+              preload="metadata"
+              aria-label="Simlux LED lighting demo video"
+            />
           </div>
         </div>
       </section>
@@ -69,35 +84,6 @@ export default function HomePage() {
             <h3>Affordable supply</h3>
             <p>Cost-conscious LED solutions for companies that need good lighting without overspending.</p>
           </article>
-        </div>
-      </section>
-
-      <section className="section video-showcase">
-        <div className="section-contained video-showcase-grid">
-          <div className="video-showcase-copy">
-            <p className="eyebrow">Lighting preview</p>
-            <h2>See how Simlux LED products shape a modern interior.</h2>
-            <p>
-              A short visual walkthrough of office lighting, decorative LED profiles, neon accents,
-              and product options for commercial decoration projects.
-            </p>
-            <Link className="text-link" href="/products">
-              Explore products <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-          </div>
-          <div className="video-frame">
-            <video
-              src="/videos/simlux-demo-video.mp4"
-              poster="/products/generated-flex-neon-showroom.png"
-              autoPlay
-              muted
-              loop
-              playsInline
-              controls
-              preload="metadata"
-              aria-label="Simlux LED lighting demo video"
-            />
-          </div>
         </div>
       </section>
 
