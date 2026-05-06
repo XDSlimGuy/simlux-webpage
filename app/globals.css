@@ -16,7 +16,7 @@
   --shadow-sm: 0 10px 26px rgba(17, 26, 31, 0.08);
   --shadow-md: 0 24px 60px rgba(17, 26, 31, 0.14);
   --radius: 8px;
-  --header-height: 78px;
+  --header-height: 108px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -106,7 +106,7 @@ label:focus-visible {
   align-items: center;
   gap: 24px;
   min-height: var(--header-height);
-  padding: 14px clamp(18px, 4vw, 58px);
+  padding: 10px clamp(18px, 4vw, 58px);
   background: rgba(248, 250, 248, 0.94);
   border-bottom: 1px solid rgba(217, 225, 223, 0.72);
   backdrop-filter: blur(7px);
@@ -1203,7 +1203,7 @@ p {
 
 @media (max-width: 980px) {
   :root {
-    --header-height: 72px;
+    --header-height: 92px;
   }
 
   .site-header {
@@ -1354,7 +1354,7 @@ p {
 
 @media (max-width: 640px) {
   :root {
-    --header-height: 68px;
+    --header-height: 84px;
   }
 
   .site-header {
