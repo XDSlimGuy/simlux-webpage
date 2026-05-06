@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import MenuOutsideClose from "./menu-outside-close";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Globe2, Mail, MapPin, Phone } from "lucide-react";
+import { Globe2, Mail, Phone } from "lucide-react";
 import { Inter, Sora } from "next/font/google";
 
 const inter = Inter({
@@ -104,10 +104,6 @@ export default function RootLayout({ children }) {
               <Globe2 size={16} aria-hidden="true" />
               www.simluxled.com
             </a>
-            <span>
-              <MapPin size={16} aria-hidden="true" />
-              Rm402, Flat 20, New Times Garden, Dong Chen Road 6, Qingyuan City, Guang Dong province, China.
-            </span>
             <Link href="/products">Product catalog</Link>
             <Link href="/contact">Contact form</Link>
           </div>
