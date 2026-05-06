@@ -1,6 +1,7 @@
 import "./globals.css";
 import Image from "next/image";
 import Link from "next/link";
+import MenuOutsideClose from "./menu-outside-close";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Globe2, Mail, Phone } from "lucide-react";
 import { Inter, Sora } from "next/font/google";
@@ -71,12 +72,12 @@ export default function RootLayout({ children }) {
               </Link>
             ))}
           </nav>
-          <label className="menu-dismiss" htmlFor="nav-toggle" aria-hidden="true" />
           <Link className="header-contact" href="/contact">
             <Mail size={18} aria-hidden="true" />
             <span>Inquire</span>
           </Link>
         </header>
+        <MenuOutsideClose />
         <main id="main-content">{children}</main>
         <div className="viewport-fade viewport-fade-top" aria-hidden="true" />
         <div className="viewport-fade viewport-fade-bottom" aria-hidden="true" />

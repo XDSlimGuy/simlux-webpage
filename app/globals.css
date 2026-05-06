@@ -253,10 +253,6 @@ label:focus-visible {
   display: none;
 }
 
-.menu-dismiss {
-  display: none;
-}
-
 h1,
 h2,
 h3,
@@ -1297,17 +1293,6 @@ p {
     transform-origin: top center;
     visibility: hidden;
     transition: opacity 220ms ease, transform 260ms var(--ease-spring), visibility 220ms ease;
-  }
-
-  .menu-dismiss {
-    position: fixed;
-    z-index: 2;
-    inset: var(--header-height) 0 0;
-    cursor: default;
-  }
-
-  .nav-toggle:checked ~ .menu-dismiss {
-    display: block;
   }
 
   .nav-toggle:checked ~ .site-nav {
