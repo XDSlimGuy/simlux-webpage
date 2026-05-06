@@ -25,6 +25,8 @@ export default function AboutPage() {
           alt="LED lighting showroom with decorative strips, linear profiles, and accent lighting"
           width={1792}
           height={1024}
+          quality={95}
+          priority
           sizes="(max-width: 980px) 100vw, 44vw"
         />
       </section>

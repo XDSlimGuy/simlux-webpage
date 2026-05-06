@@ -790,6 +790,11 @@ p {
   box-shadow: var(--shadow-md);
 }
 
+.about-hero img {
+  aspect-ratio: 16 / 9;
+  object-position: center;
+}
+
 .products-layout {
   width: min(1180px, calc(100% - 36px));
   grid-template-columns: 260px 1fr;
