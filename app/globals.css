@@ -253,6 +253,10 @@ label:focus-visible {
   display: none;
 }
 
+.menu-dismiss {
+  display: none;
+}
+
 h1,
 h2,
 h3,
@@ -1211,6 +1215,8 @@ p {
   }
 
   .menu-button {
+    position: relative;
+    z-index: 4;
     grid-column: 3;
     display: grid;
     width: 44px;
@@ -1273,6 +1279,7 @@ p {
 
   .site-nav {
     position: absolute;
+    z-index: 3;
     top: var(--header-height);
     right: 18px;
     left: 18px;
@@ -1290,6 +1297,17 @@ p {
     transform-origin: top center;
     visibility: hidden;
     transition: opacity 220ms ease, transform 260ms var(--ease-spring), visibility 220ms ease;
+  }
+
+  .menu-dismiss {
+    position: fixed;
+    z-index: 2;
+    inset: var(--header-height) 0 0;
+    cursor: default;
+  }
+
+  .nav-toggle:checked ~ .menu-dismiss {
+    display: block;
   }
 
   .nav-toggle:checked ~ .site-nav {

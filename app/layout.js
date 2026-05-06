@@ -71,6 +71,7 @@ export default function RootLayout({ children }) {
               </Link>
             ))}
           </nav>
+          <label className="menu-dismiss" htmlFor="nav-toggle" aria-hidden="true" />
           <Link className="header-contact" href="/contact">
             <Mail size={18} aria-hidden="true" />
             <span>Inquire</span>
