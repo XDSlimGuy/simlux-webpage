@@ -1076,6 +1076,14 @@ p {
   font-weight: 900;
 }
 
+.contact-form .spam-trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .label-text {
   display: inline-flex;
   align-items: center;

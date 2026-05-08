@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Script from "next/script";
 import { Send } from "lucide-react";
+
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 const initialState = {
   name: "",
@@ -10,20 +13,32 @@ const initialState = {
   phone: "",
   productInterest: "",
   message: "",
+  website: "",
+  submittedAt: 0,
 };
 
 export default function ContactForm({ initialProduct = "" }) {
   const [form, setForm] = useState({ ...initialState, productInterest: initialProduct });
+  const [turnstileToken, setTurnstileToken] = useState("");
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   function updateField(event) {
     const { name, value } = event.target;
-    setForm((current) => ({ ...current, [name]: value }));
+    setForm((current) => ({ ...current, submittedAt: current.submittedAt || Date.now(), [name]: value }));
+  }
+
+  function markFormStarted() {
+    setForm((current) => (current.submittedAt ? current : { ...current, submittedAt: Date.now() }));
   }
 
   async function submitForm(event) {
     event.preventDefault();
+    if (turnstileSiteKey && !turnstileToken) {
+      setStatus({ type: "error", message: "Please complete the security check and try again." });
+      return;
+    }
+
     setIsSubmitting(true);
     setStatus({ type: "idle", message: "" });
 
@@ -31,7 +46,7 @@ export default function ContactForm({ initialProduct = "" }) {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, turnstileToken }),
       });
       const result = await response.json();
 
@@ -46,16 +61,20 @@ export default function ContactForm({ initialProduct = "" }) {
           ? "Thanks. Your inquiry has been sent to Simlux."
           : "Thanks. Prototype submission received. Email delivery can be enabled with production credentials.",
       });
-      setForm({ ...initialState, productInterest: "" });
+      setForm({ ...initialState, productInterest: "", submittedAt: Date.now() });
+      setTurnstileToken("");
     } catch (error) {
-      setStatus({ type: "error", message: "The form could not be submitted. Please email sales@simluxled.com directly." });
+      setStatus({ type: "error", message: "The form could not be submitted. Please email simlux01@outlook.com directly." });
     } finally {
       setIsSubmitting(false);
     }
   }
 
   return (
-    <form className="contact-form" onSubmit={submitForm} noValidate>
+    <form className="contact-form" onFocusCapture={markFormStarted} onSubmit={submitForm} noValidate>
+      {turnstileSiteKey ? (
+        <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
+      ) : null}
       <div>
         <p className="eyebrow">Inquiry form</p>
         <h2>Request product information</h2>
@@ -88,6 +107,16 @@ export default function ContactForm({ initialProduct = "" }) {
           aria-required="true"
         />
       </label>
+      <label className="spam-trap" aria-hidden="true">
+        <span>Website</span>
+        <input
+          name="website"
+          value={form.website}
+          onChange={updateField}
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </label>
       <label>
         <span className="label-text">Phone</span>
         <input name="phone" value={form.phone} onChange={updateField} autoComplete="tel" />
@@ -113,6 +142,17 @@ export default function ContactForm({ initialProduct = "" }) {
           placeholder="Tell us the lighting use, estimated quantity, and any target specification."
         />
       </label>
+      {turnstileSiteKey ? (
+        <div className="turnstile-field">
+          <div
+            className="cf-turnstile"
+            data-sitekey={turnstileSiteKey}
+            data-callback="simluxTurnstileSuccess"
+            data-expired-callback="simluxTurnstileExpired"
+            data-error-callback="simluxTurnstileExpired"
+          />
+        </div>
+      ) : null}
       <button className="button primary form-submit" disabled={isSubmitting} type="submit">
         {isSubmitting ? "Sending..." : "Send inquiry"}
         <Send size={18} aria-hidden="true" />
@@ -122,6 +162,16 @@ export default function ContactForm({ initialProduct = "" }) {
           {status.message}
         </p>
       ) : null}
+      <TurnstileCallbacks onSuccess={setTurnstileToken} onExpired={() => setTurnstileToken("")} />
     </form>
   );
+}
+
+function TurnstileCallbacks({ onSuccess, onExpired }) {
+  if (typeof window !== "undefined") {
+    window.simluxTurnstileSuccess = onSuccess;
+    window.simluxTurnstileExpired = onExpired;
+  }
+
+  return null;
 }

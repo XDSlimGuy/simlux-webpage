@@ -3,8 +3,9 @@ import { Resend } from "resend";
 
 const requiredFields = ["name", "company", "email", "message"];
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const contactToEmail = process.env.CONTACT_TO_EMAIL || "sales@simluxled.com";
+const contactToEmail = process.env.CONTACT_TO_EMAIL || "simlux01@outlook.com";
 const contactFromEmail = process.env.CONTACT_FROM_EMAIL || "Simlux Website <website@simluxled.com>";
+const minimumCompletionMs = 2500;
 
 export async function POST(request) {
   let payload;
@@ -22,6 +23,11 @@ export async function POST(request) {
 
   if (!emailPattern.test(payload.email)) {
     return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
+  }
+
+  if (isLikelySpam(payload)) {
+    console.info("Spam-like contact inquiry ignored.");
+    return NextResponse.json({ ok: true, emailConfigured: Boolean(process.env.RESEND_API_KEY) });
   }
 
   const inquiry = {
@@ -73,4 +79,29 @@ function formatInquiry(inquiry) {
     "Message:",
     inquiry.message,
   ].join("\n");
+}
+
+function isLikelySpam(payload) {
+  const submittedAt = Number(payload.submittedAt || 0);
+  const elapsedMs = Date.now() - submittedAt;
+  const filledTrap = Boolean(String(payload.website || "").trim());
+  const completedTooFast = !submittedAt || elapsedMs < minimumCompletionMs;
+  const randomTextFields = [payload.name, payload.company, payload.message, payload.productInterest].filter(looksRandom);
+
+  return filledTrap || completedTooFast || randomTextFields.length >= 2;
+}
+
+function looksRandom(value) {
+  const text = String(value || "").trim();
+
+  if (text.length < 12 || /\s/.test(text)) {
+    return false;
+  }
+
+  const letters = text.replace(/[^a-z]/gi, "");
+  const upper = (letters.match(/[A-Z]/g) || []).length;
+  const lower = (letters.match(/[a-z]/g) || []).length;
+  const vowels = (letters.match(/[aeiou]/gi) || []).length;
+
+  return letters.length >= 12 && upper >= 3 && lower >= 3 && vowels / letters.length < 0.35;
 }
