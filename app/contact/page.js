@@ -35,10 +35,6 @@ export default async function ContactPage({ searchParams }) {
             <Phone size={20} aria-hidden="true" />
             +852 93485095
           </a>
-          <a href="tel:+8613164705570">
-            <Phone size={20} aria-hidden="true" />
-            +86 13164705570
-          </a>
           <a href="https://www.simluxled.com">
             <Globe2 size={20} aria-hidden="true" />
             www.simluxled.com
