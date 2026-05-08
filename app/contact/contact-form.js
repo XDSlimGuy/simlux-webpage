@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Script from "next/script";
 import { Send } from "lucide-react";
 
@@ -168,10 +168,10 @@ export default function ContactForm({ initialProduct = "" }) {
 }
 
 function TurnstileCallbacks({ onSuccess, onExpired }) {
-  if (typeof window !== "undefined") {
+  useEffect(() => {
     window.simluxTurnstileSuccess = onSuccess;
     window.simluxTurnstileExpired = onExpired;
-  }
+  }, [onExpired, onSuccess]);
 
   return null;
 }

@@ -1110,6 +1110,10 @@ p {
   resize: vertical;
 }
 
+.turnstile-field {
+  min-height: 65px;
+}
+
 .contact-form input:focus,
 .contact-form textarea:focus {
   border-color: var(--teal);

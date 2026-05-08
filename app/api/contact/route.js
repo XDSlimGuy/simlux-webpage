@@ -6,6 +6,7 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const contactToEmail = process.env.CONTACT_TO_EMAIL || "simlux01@outlook.com";
 const contactFromEmail = process.env.CONTACT_FROM_EMAIL || "Simlux Website <website@simluxled.com>";
 const minimumCompletionMs = 2500;
+const turnstileVerifyUrl = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
 export async function POST(request) {
   let payload;
@@ -28,6 +29,11 @@ export async function POST(request) {
   if (isLikelySpam(payload)) {
     console.info("Spam-like contact inquiry ignored.");
     return NextResponse.json({ ok: true, emailConfigured: Boolean(process.env.RESEND_API_KEY) });
+  }
+
+  const turnstileResult = await verifyTurnstile(payload.turnstileToken, request);
+  if (!turnstileResult.ok) {
+    return NextResponse.json({ error: turnstileResult.error }, { status: 400 });
   }
 
   const inquiry = {
@@ -89,6 +95,45 @@ function isLikelySpam(payload) {
   const randomTextFields = [payload.name, payload.company, payload.message, payload.productInterest].filter(looksRandom);
 
   return filledTrap || completedTooFast || randomTextFields.length >= 2;
+}
+
+async function verifyTurnstile(token, request) {
+  const secret = process.env.TURNSTILE_SECRET_KEY;
+
+  if (!secret) {
+    return { ok: true };
+  }
+
+  if (!token) {
+    return { ok: false, error: "Please complete the security check and try again." };
+  }
+
+  const formData = new FormData();
+  formData.append("secret", secret);
+  formData.append("response", token);
+
+  const remoteIp = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for")?.split(",")[0];
+  if (remoteIp) {
+    formData.append("remoteip", remoteIp.trim());
+  }
+
+  try {
+    const response = await fetch(turnstileVerifyUrl, {
+      method: "POST",
+      body: formData,
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      return { ok: true };
+    }
+
+    console.info("Turnstile verification failed:", result["error-codes"]);
+    return { ok: false, error: "The security check failed. Please refresh and try again." };
+  } catch (error) {
+    console.error("Turnstile verification request failed:", error);
+    return { ok: false, error: "The security check could not be verified. Please try again." };
+  }
 }
 
 function looksRandom(value) {
