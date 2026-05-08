@@ -27,9 +27,9 @@ export default async function ContactPage({ searchParams }) {
 
         <aside className="contact-panel">
           <h2>Direct contact</h2>
-          <a href="mailto:sales@simluxled.com">
+          <a href="mailto:simlux01@outlook.com">
             <Mail size={20} aria-hidden="true" />
-            sales@simluxled.com
+            simlux01@outlook.com
           </a>
           <a href="tel:+85293485095">
             <Phone size={20} aria-hidden="true" />

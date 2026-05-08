@@ -88,9 +88,9 @@ export default function RootLayout({ children }) {
             <p>Affordable quality LED lighting for indoor decoration and commercial spaces.</p>
           </div>
           <div className="footer-links">
-            <a href="mailto:sales@simluxled.com">
+            <a href="mailto:simlux01@outlook.com">
               <Mail size={16} aria-hidden="true" />
-              sales@simluxled.com
+              simlux01@outlook.com
             </a>
             <a href="tel:+85293485095">
               <Phone size={16} aria-hidden="true" />
