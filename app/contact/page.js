@@ -52,10 +52,6 @@ export default async function ContactPage({ searchParams }) {
               <MapPin size={18} aria-hidden="true" />
               RM1007, 10F, Sterling CTR, Cheung Yue St., Lai Chi Kok, Hong Kong
             </span>
-            <span>
-              <MapPin size={18} aria-hidden="true" />
-              Rm402, Flat 20, New Times Garden, Dong Chen Road 6, Qingyuan City, Guang Dong province, China.
-            </span>
           </div>
         </aside>
       </section>
