@@ -1,3 +1,4 @@
+import site from "@/content/site.json";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, BadgeCheck, Building2, Lightbulb, Ruler, Sparkles, SunMedium } from "lucide-react";
@@ -9,7 +10,7 @@ export default function HomePage() {
       <section className="hero">
         <div className="hero-media" aria-hidden="true">
           <Image
-            src="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1600&q=85"
+            src={site.home.heroImage}
             alt=""
             fill
             priority
@@ -18,11 +19,10 @@ export default function HomePage() {
         </div>
         <div className="hero-content">
           <div className="hero-copy-block">
-            <p className="eyebrow">LED strips, bulbs, and decorative lighting</p>
-            <h1>Affordable LED lighting for polished commercial interiors.</h1>
+            <p className="eyebrow">{site.home.eyebrow}</p>
+            <h1>{site.home.heading}</h1>
             <p className="hero-copy">
-              Simlux Technology Limited supplies quality LED strips, bulbs, and decorative lighting for
-              offices, retail spaces, hospitality interiors, and indoor decoration projects.
+              {site.home.intro}
             </p>
             <div className="hero-actions">
               <Link className="button primary" href="/products">
@@ -66,7 +66,7 @@ export default function HomePage() {
       <section className="section intro-grid section-contained">
         <div>
           <p className="eyebrow">Built for practical projects</p>
-          <h2>Clear choices for teams sourcing LED lighting without overspending.</h2>
+          <h2>{site.home.valueHeading}</h2>
         </div>
         <div className="value-list">
           <article>
@@ -90,7 +90,7 @@ export default function HomePage() {
       <section className="section band">
         <div className="section-heading section-contained">
           <p className="eyebrow">Product categories</p>
-          <h2>Core LED ranges for decoration, replacement, and fit-out work.</h2>
+          <h2>{site.home.categoryHeading}</h2>
         </div>
         <div className="category-grid section-contained">
           {categories.map((category) => (
@@ -107,7 +107,7 @@ export default function HomePage() {
         <div className="section-heading split">
           <div>
             <p className="eyebrow">Featured products</p>
-            <h2>Start with the most requested lighting formats.</h2>
+            <h2>{site.home.featuredHeading}</h2>
           </div>
           <Link className="text-link" href="/products">
             Full catalog <ArrowRight size={16} aria-hidden="true" />
@@ -124,10 +124,9 @@ export default function HomePage() {
         <div className="section-contained use-case-grid">
           <div>
             <p className="eyebrow">Commercial use cases</p>
-            <h2>Lighting that supports the atmosphere of your space.</h2>
+            <h2>{site.home.useHeading}</h2>
             <p>
-              From bright office replacements to warm accent lines, Simlux products help
-              companies create practical interiors with a cleaner finished look.
+              {site.home.useIntro}
             </p>
           </div>
           <div className="use-case-list">
@@ -146,8 +145,8 @@ export default function HomePage() {
       <section className="cta-strip">
         <Building2 size={32} aria-hidden="true" />
         <div>
-          <h2>Planning a shop, office, hotel, or interior decoration project?</h2>
-          <p>Send the product type, quantity, and lighting goal. Simlux can help match a suitable LED option.</p>
+          <h2>{site.home.ctaHeading}</h2>
+          <p>{site.home.ctaText}</p>
         </div>
         <Link className="button primary" href="/contact">
           Request inquiry <ArrowRight size={18} aria-hidden="true" />
@@ -169,3 +168,4 @@ function ProductCard({ product }) {
     </Link>
   );
 }
+

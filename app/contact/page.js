@@ -1,3 +1,4 @@
+import site from "@/content/site.json";
 import ContactForm from "./contact-form";
 import { Globe2, Mail, MapPin, Phone } from "lucide-react";
 
@@ -15,10 +16,9 @@ export default async function ContactPage({ searchParams }) {
     <>
       <section className="page-hero compact">
         <p className="eyebrow">Contact Simlux</p>
-        <h1>Tell us what LED product or project you are sourcing.</h1>
+        <h1>{site.contact.heading}</h1>
         <p>
-          Send your lighting need, product interest, and estimated quantity. Simlux will review your
-          inquiry and follow up by email.
+          {site.contact.intro}
         </p>
       </section>
 
@@ -27,26 +27,25 @@ export default async function ContactPage({ searchParams }) {
 
         <aside className="contact-panel">
           <h2>Direct contact</h2>
-          <a href="mailto:simlux01@outlook.com">
+          <a href={`mailto:${site.contact.email}`}>
             <Mail size={20} aria-hidden="true" />
-            simlux01@outlook.com
+            {site.contact.email}
           </a>
-          <a href="tel:+85293485095">
+          <a href={`tel:${site.contact.phone.replace(/\s/g, "")}`}>
             <Phone size={20} aria-hidden="true" />
-            +852 93485095
+            {site.contact.phone}
           </a>
           <a href="https://www.simluxled.com">
             <Globe2 size={20} aria-hidden="true" />
             www.simluxled.com
           </a>
           <p>
-            For a faster quotation, include product type, color temperature, estimated quantity,
-            and where the lighting will be used.
+            {site.contact.helper}
           </p>
           <div className="contact-muted">
             <span>
               <MapPin size={18} aria-hidden="true" />
-              RM1007, 10F, Sterling CTR, Cheung Yue St., Lai Chi Kok, Hong Kong
+              {site.contact.address}
             </span>
           </div>
         </aside>
@@ -54,3 +53,4 @@ export default async function ContactPage({ searchParams }) {
     </>
   );
 }
+

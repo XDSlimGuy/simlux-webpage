@@ -1,3 +1,4 @@
+import site from "@/content/site.json";
 import "./globals.css";
 import Image from "next/image";
 import Link from "next/link";
@@ -85,16 +86,16 @@ export default function RootLayout({ children }) {
         <footer className="site-footer">
           <div>
             <strong>Simlux Technology Limited</strong>
-            <p>Affordable quality LED lighting for indoor decoration and commercial spaces.</p>
+            <p>{site.footer.description}</p>
           </div>
           <div className="footer-links">
-            <a href="mailto:simlux01@outlook.com">
+            <a href={`mailto:${site.contact.email}`}>
               <Mail size={16} aria-hidden="true" />
-              simlux01@outlook.com
+              {site.contact.email}
             </a>
-            <a href="tel:+85293485095">
+            <a href={`tel:${site.contact.phone.replace(/\s/g, "")}`}>
               <Phone size={16} aria-hidden="true" />
-              +852 93485095
+              {site.contact.phone}
             </a>
             <a href="https://www.simluxled.com">
               <Globe2 size={16} aria-hidden="true" />
@@ -108,3 +109,4 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+

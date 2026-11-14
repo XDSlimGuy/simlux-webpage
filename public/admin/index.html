@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://images.unsplash.com; connect-src 'self' https://api.github.com; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
+<title>Simlux Studio</title>
+<link rel="stylesheet" href="/admin/studio.css">
+<script src="/admin/studio.js" defer></script>
+</head>
+<body>
+<header class="topbar"><a class="wordmark" href="/">SIMLUX <span>STUDIO</span></a><span class="top-note">Your website editor</span><a class="view-link" href="/" target="_blank" rel="noopener noreferrer">View website ↗</a></header>
+<main class="shell">
+<section id="welcome" class="welcome">
+ <span class="eyebrow">YOUR WEBSITE, IN YOUR HANDS</span><h1>Make your next<br><em>bright idea</em> happen.</h1><p>Update your words, images, and products in one place. When you’re ready, publish your changes to your website.</p>
+ <div class="connect-card"><h2>Connect to your website</h2><p>Enter a GitHub fine-grained access token with <strong>Contents: Read and write</strong> access to <strong>XDSlimGuy/simlux-webpage</strong>. Your token stays in this browser tab and is cleared when you close it.</p><p><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Create a GitHub token ↗</a> · Never share your token in chat or email.</p><form id="connect-form"><label for="token">GitHub access token</label><div class="connect-row"><input id="token" type="password" autocomplete="off" spellcheck="false" required placeholder="github_pat_…"><button type="submit">Connect securely <span>→</span></button></div></form><p class="hint">GitHub may ask you to sign in and choose an expiration date for your token.</p><button id="try-demo" class="secondary" type="button">Try the demo</button><p class="hint">Explore with sample content. Demo changes cannot be published.</p><p id="connect-error" class="error" role="alert"></p></div>
+</section>
+<section id="editor" class="editor" hidden>
+ <div class="editor-head"><div><span class="eyebrow">SIMLUX STUDIO</span><h1>Welcome back.</h1><p>Choose a section to make changes to your site.</p></div><div class="actions"><a class="text-button" href="/" target="_blank" rel="noopener noreferrer">View live site ↗</a><button id="publish" type="button">Publish changes <span>↗</span></button></div></div>
+ <div id="status" class="status" role="status" aria-live="polite">Connected to GitHub. Changes remain in this tab until you publish.</div>
+ <div class="editor-grid"><nav class="sidebar" aria-label="Editor sections"><span>WEBSITE</span><button class="active" data-tab="home" type="button">01 <b>Home page</b></button><button data-tab="about" type="button">02 <b>About page</b></button><button data-tab="productsPage" type="button">03 <b>Products page</b></button><button data-tab="contact" type="button">04 <b>Contact details</b></button><button data-tab="footer" type="button">05 <b>Footer</b></button><span>CATALOG</span><button data-tab="products" type="button">06 <b>Products</b></button><button data-tab="categories" type="button">07 <b>Categories</b></button><button id="disconnect" class="disconnect" type="button">Disconnect</button></nav>
+ <section class="workspace"><div class="workspace-title"><div><span class="eyebrow">EDIT YOUR WEBSITE</span><h2 id="section-title">Home page</h2><p id="section-description"></p></div><span class="draft">DRAFT</span></div><div id="fields"></div></section></div>
+</section>
+</main>
+</body></html>

@@ -1,3 +1,4 @@
+import site from "@/content/site.json";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, BadgeDollarSign, Building2, Lightbulb, ShieldCheck } from "lucide-react";
@@ -14,15 +15,14 @@ export default function AboutPage() {
       <section className="page-hero about-hero">
         <div>
           <p className="eyebrow">About Simlux</p>
-          <h1>Supplying LED lighting that helps interiors look better without stretching the budget.</h1>
+          <h1>{site.about.heading}</h1>
           <p>
-            Simlux Technology Limited sells LED strips, bulbs, and decorative lighting products for companies,
-            contractors, shops, hospitality spaces, and indoor decoration projects.
+            {site.about.intro}
           </p>
         </div>
         <Image
-          src="/about/led-lighting-showroom.png"
-          alt="LED lighting showroom with decorative strips, linear profiles, and accent lighting"
+          src={site.about.image}
+          alt={site.about.imageAlt}
           width={1792}
           height={1024}
           quality={95}
@@ -34,17 +34,14 @@ export default function AboutPage() {
       <section className="section intro-grid">
         <div>
           <p className="eyebrow">Company focus</p>
-          <h2>Quality products, affordable cost, clear product choices.</h2>
+          <h2>{site.about.focusHeading}</h2>
         </div>
         <div className="story-copy">
           <p>
-            Simlux Technology Limited supports customers who need dependable LED products for interior spaces.
-            The company focuses on practical lighting categories that are used often in commercial
-            decoration: flexible LED strips, efficient LED bulbs, and clean decorative lighting options.
+            {site.about.story1}
           </p>
           <p>
-            The goal is simple: make good LED lighting easier to source by balancing product quality,
-            price, and suitability for real installation needs.
+            {site.about.story2}
           </p>
         </div>
       </section>
@@ -76,8 +73,8 @@ export default function AboutPage() {
 
       <section className="cta-strip">
         <div>
-          <h2>Need help matching products to a lighting project?</h2>
-          <p>Share the installation area, lighting style, and estimated quantity to begin an inquiry.</p>
+          <h2>{site.about.ctaHeading}</h2>
+          <p>{site.about.ctaText}</p>
         </div>
         <Link className="button primary" href="/contact">
           Contact Simlux <ArrowRight size={18} aria-hidden="true" />
@@ -86,3 +83,4 @@ export default function AboutPage() {
     </>
   );
 }
+

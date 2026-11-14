@@ -1,3 +1,4 @@
+import site from "@/content/site.json";
 import ProductsCatalog from "./products-catalog";
 
 export const metadata = {
@@ -14,10 +15,9 @@ export default async function ProductsPage({ searchParams }) {
     <>
       <section className="page-hero compact">
         <p className="eyebrow">Product catalog</p>
-        <h1>LED products for practical indoor lighting projects.</h1>
+        <h1>{site.productsPage.heading}</h1>
         <p>
-          Browse simple overviews for Simlux LED strips, bulbs, and decorative lighting options.
-          Contact us with your target application and quantity for product matching.
+          {site.productsPage.intro}
         </p>
       </section>
 
@@ -25,3 +25,4 @@ export default async function ProductsPage({ searchParams }) {
     </>
   );
 }
+
