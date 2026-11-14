@@ -1,7 +1,5 @@
 'use strict';
 (() => {
-  const repo = 'XDSlimGuy/simlux-webpage';
-  const base = `https://api.github.com/repos/${repo}`;
   const $ = (selector) => document.querySelector(selector);
   const el = (tag, text, cls) => { const node = document.createElement(tag); if (text != null) node.textContent = text; if (cls) node.className = cls; return node; };
   const fieldMap = {
@@ -11,29 +9,22 @@
     contact: {label:'Contact details',description:'Update the contact page and the details in your footer. This does not change the email address receiving form submissions.',fields:[['heading','Page heading'],['intro','Introduction','long'],['email','Displayed email'],['phone','Displayed phone'],['address','Displayed address','long'],['helper','Quotation advice','long']]},
     footer: {label:'Footer',description:'Edit the short description at the bottom of every page.',fields:[['description','Company description','long']]}
   };
-  let token = '', site, catalog, loadedHead = '', tab = 'home', selected = 0, dirty = false, busy = false, demoMode = false;
+  let site, catalog, loadedHead = '', tab = 'home', selected = 0, dirty = false, busy = false, demoMode = false;
   let queued = new Map(), previews = new Map();
   const setStatus = (text, error=false) => { const node=$('#status'); node.textContent=text; node.classList.toggle('error-state',error); };
   const markDirty = () => { dirty=true; setStatus('You have unpublished changes. They stay in this tab until you publish.'); };
   async function api(path, options={}) {
-    const response=await fetch(path.startsWith('https://') ? path : `${base}${path}`, { ...options, headers:{ 'Accept':'application/vnd.github+json', 'Authorization':`Bearer ${token}`, 'X-GitHub-Api-Version':'2022-11-28', ...(options.body ? {'Content-Type':'application/json'} : {}), ...options.headers } });
-    let body; try { body=await response.json(); } catch { body={}; }
-    if (!response.ok) { const error=new Error(body.message || `GitHub request failed (${response.status})`); error.status=response.status; throw error; }
-    return body;
+    const response=await fetch(`/api/studio/${path}`,{...options,headers:{...(options.body ? {'Content-Type':'application/json'} : {})}});
+    const body=await response.json().catch(()=>({}));
+    if(!response.ok) {const error=new Error(body.error || 'The editor could not complete the request.');error.status=response.status;throw error;} return body;
   }
-  function decode64(encoded) { const bytes=Uint8Array.from(atob(encoded.replace(/\s/g,'')), c=>c.charCodeAt(0)); return new TextDecoder().decode(bytes); }
-  function encode64(text) { const bytes=new TextEncoder().encode(text); let result=''; for (let i=0;i<bytes.length;i+=0x8000) result+=String.fromCharCode(...bytes.subarray(i,i+0x8000)); return btoa(result); }
-  async function readJson(path, ref) { let data; try { data=await api(`/contents/${path}?ref=${encodeURIComponent(ref)}`); } catch(error) { if(error.status===404) throw new Error('Simlux Studio is not installed on the live website yet. Select Try the demo to explore this preview.'); throw error; } if (data.encoding!=='base64' || typeof data.content!=='string') throw new Error(`Could not read ${path}`); return JSON.parse(decode64(data.content)); }
-  $('#connect-form').addEventListener('submit', async e => {
-    e.preventDefault(); const button=e.currentTarget.querySelector('button'); button.disabled=true; $('#connect-error').textContent=''; token=$('#token').value.trim();
-    try { const user=await api('https://api.github.com/user'); if (user.login.toLowerCase()!=='xdslimguy') throw new Error('Please connect using the XDSlimGuy GitHub account.');
-      const ref=await api('/git/ref/heads/main'); loadedHead=ref.object.sha;
-      [site,catalog]=await Promise.all([readJson('content/site.json',loadedHead), readJson('content/products.json',loadedHead)]);
+  async function connect() {
+    try { const data=await api('state'); site=data.site;catalog=data.catalog;loadedHead=data.head;
       if (!site.home || !Array.isArray(catalog.products) || !Array.isArray(catalog.categories)) throw new Error('The website content is not in the expected format.');
-      demoMode=false; $('#token').value=''; $('#welcome').hidden=true; $('#editor').hidden=false; tab='home'; render();
-    } catch(err) { token=''; const reason=err.status===404 ? 'GitHub could not find this repository. Check that your token can access XDSlimGuy/simlux-webpage.' : err.message; $('#connect-error').textContent=`Could not connect: ${reason}`; }
-    finally { button.disabled=false; }
-  });
+      demoMode=false; $('#welcome').hidden=true;$('#editor').hidden=false;tab='home';render();
+    } catch(error) { if(error.status!==401) $('#connect-error').textContent=error.message; }
+  }
+  connect();
   $('#try-demo').addEventListener('click', async () => {
     try { const response=await fetch('/admin/demo.json'); if(!response.ok) throw new Error('Demo unavailable'); const data=await response.json(); site=data.site; catalog=data.catalog; demoMode=true; dirty=false; tab='home'; $('#welcome').hidden=true; $('#editor').hidden=false; render(); setStatus('Demo mode: explore and edit sample content. Nothing will be published.'); }
     catch(err) { $('#connect-error').textContent=err.message; }
@@ -47,10 +38,10 @@
     const wrap=el('div',null,'field'); const title=el('label',label,'field-label'); const id=`img-${crypto.randomUUID()}`; title.htmlFor=id; wrap.append(title);
     const img=el('img',null,'image-preview'); img.alt='Current selected image'; img.src=queued.get(object[key])?.preview || previews.get(object[key]) || object[key] || ''; wrap.append(img);
     const upload=el('input'); upload.id=id; upload.type='file'; upload.accept='image/jpeg,image/png,image/webp,image/avif'; wrap.append(upload);
-    const help=el('p','Choose a JPG, PNG, WebP or AVIF image, up to 4 MB. The image is uploaded when you publish.','field-help'); wrap.append(help);
-    upload.addEventListener('change',async()=>{ const file=upload.files[0]; if(!file)return; if(!['image/jpeg','image/png','image/webp','image/avif'].includes(file.type) || file.size>4*1024*1024) { setStatus('Choose a JPG, PNG, WebP or AVIF image no larger than 4 MB.',true); upload.value=''; return; }
+    const help=el('p','Choose a JPG, PNG, WebP or AVIF image, up to 2 MB. The image is uploaded when you publish.','field-help'); wrap.append(help);
+    upload.addEventListener('change',async()=>{ const file=upload.files[0]; if(!file)return; if(!['image/jpeg','image/png','image/webp','image/avif'].includes(file.type) || file.size>2*1024*1024) { setStatus('Choose a JPG, PNG, WebP or AVIF image no larger than 2 MB.',true); upload.value=''; return; }
       try { const encoded=await new Promise((resolve,reject)=>{const reader=new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=()=>reject(new Error('Could not read image')); reader.readAsDataURL(file);});
-        const extension={'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/avif':'avif'}[file.type]; const path=`/uploads/${crypto.randomUUID()}.${extension}`; queued.set(path,{base64:encoded.split(',')[1],preview:encoded}); object[key]=path; img.src=encoded; markDirty();
+        const extension={'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/avif':'avif'}[file.type]; const path=`/uploads/${crypto.randomUUID()}.${extension}`; queued.set(path,{base64:encoded.split(',')[1],preview:encoded,type:file.type}); object[key]=path; img.src=encoded; markDirty();
       } catch(err) {setStatus(err.message,true);} }); parent.append(wrap);
   }
   function listField(parent, object, key, label) { const proxy={value:(object[key]||[]).join('\n')}; const wrap=formField(parent,proxy,'value',label,'long',()=>{object[key]=proxy.value.split('\n').map(x=>x.trim()).filter(Boolean);}); wrap.append(el('p','One item per line.','field-help')); }
@@ -80,22 +71,20 @@
     for(const [key,label,kind] of info.fields) { if(kind==='image') imageField(root,site[tab],key,label); else formField(root,site[tab],key,label,kind); }
   }
   document.querySelectorAll('.sidebar [data-tab]').forEach(button=>button.addEventListener('click',()=>{tab=button.dataset.tab;render();}));
-  $('#disconnect').addEventListener('click',()=>{if(dirty && !confirm('Discard unpublished changes and disconnect?'))return;token='';site=null;catalog=null;queued.clear();previews.clear();dirty=false;$('#editor').hidden=true;$('#welcome').hidden=false;});
+  $('#disconnect').addEventListener('click',async()=>{if(dirty && !confirm('Discard unpublished changes and sign out?'))return; if(!demoMode){try {await api('logout',{method:'POST'});}catch(error){setStatus(error.message,true);return;}}site=null;catalog=null;queued.clear();previews.clear();dirty=false;demoMode=false;$('#editor').hidden=true;$('#welcome').hidden=false;});
   window.addEventListener('beforeunload', e=>{if(dirty){e.preventDefault();e.returnValue='';}});
   function usedPaths() {const text=JSON.stringify({site,catalog});return [...queued.keys()].filter(path=>text.includes(JSON.stringify(path)));}
   function validate() {if(!site.contact.email || !site.contact.email.includes('@')) throw new Error('Enter a valid displayed email address.'); if(!catalog.categories.length) throw new Error('At least one category is required.'); for(const p of catalog.products){if(!p.name.trim()||!p.summary.trim()||!p.image) throw new Error('Every product needs a name, description, and main image.'); if(!catalog.categories.some(c=>c.id===p.category)) throw new Error(`Choose a valid category for ${p.name}.`);} for(const c of catalog.categories) if(!c.name.trim()) throw new Error('Category names cannot be empty.');}
   $('#publish').addEventListener('click',async()=>{
-    if(busy)return; if(demoMode){setStatus('This is a demo. Connect with GitHub to publish real changes.');return;} if(!dirty){setStatus('There are no unpublished changes.');return;}
+    if(busy)return; if(demoMode){setStatus('This is a demo. Sign in to publish real changes.');return;} if(!dirty){setStatus('There are no unpublished changes.');return;}
     try { validate(); } catch(e) {setStatus(e.message,true);return;}
     if(!confirm('Publish these changes to your website? Vercel will build the updated site after the changes are saved.'))return;
     busy=true;const button=$('#publish');button.disabled=true;setStatus('Publishing your changes. Please keep this tab open…');
     try {
-      const latest=await api('/git/ref/heads/main'); if(latest.object.sha!==loadedHead) throw new Error('The website changed since you connected. Copy your edits somewhere safe, then reconnect to load the latest version.');
-      const parent=await api(`/git/commits/${loadedHead}`); const tree=[];
-      for(const path of usedPaths()){const blob=await api('/git/blobs',{method:'POST',body:JSON.stringify({content:queued.get(path).base64,encoding:'base64'})});tree.push({path:`public${path}`,mode:'100644',type:'blob',sha:blob.sha});}
-      for(const [path,content] of [['content/site.json',site],['content/products.json',catalog]]) {const blob=await api('/git/blobs',{method:'POST',body:JSON.stringify({content:encode64(JSON.stringify(content,null,2)+'\n'),encoding:'base64'})});tree.push({path,mode:'100644',type:'blob',sha:blob.sha});}
-      const nextTree=await api('/git/trees',{method:'POST',body:JSON.stringify({base_tree:parent.tree.sha,tree})}); const commit=await api('/git/commits',{method:'POST',body:JSON.stringify({message:'Update website content from Simlux Studio',tree:nextTree.sha,parents:[loadedHead]})});
-      await api('/git/refs/heads/main',{method:'PATCH',body:JSON.stringify({sha:commit.sha,force:false})});loadedHead=commit.sha;for(const [path,image] of queued) previews.set(path,image.preview);queued.clear();dirty=false;setStatus('Changes saved to GitHub. Vercel should now build and publish your website; this can take a few minutes.');render();
+      const uploads=[];
+      for(const path of usedPaths()){const image=queued.get(path);uploads.push(await api('upload',{method:'POST',body:JSON.stringify({path,base64:image.base64,type:image.type})}));}
+      const result=await api('publish',{method:'POST',body:JSON.stringify({head:loadedHead,site,catalog,uploads})});
+      loadedHead=result.head;for(const [path,image] of queued) previews.set(path,image.preview);queued.clear();dirty=false;setStatus('Changes saved to GitHub. Vercel should now build and publish your website; this can take a few minutes.');render();
     } catch(e){setStatus(`Could not publish: ${e.message}`,true);} finally {busy=false;button.disabled=false;}
   });
 })();
