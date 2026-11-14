@@ -18,12 +18,12 @@
   async function api(path, options={}) {
     const response=await fetch(path.startsWith('https://') ? path : `${base}${path}`, { ...options, headers:{ 'Accept':'application/vnd.github+json', 'Authorization':`Bearer ${token}`, 'X-GitHub-Api-Version':'2022-11-28', ...(options.body ? {'Content-Type':'application/json'} : {}), ...options.headers } });
     let body; try { body=await response.json(); } catch { body={}; }
-    if (!response.ok) throw new Error(body.message || `GitHub request failed (${response.status})`);
+    if (!response.ok) { const error=new Error(body.message || `GitHub request failed (${response.status})`); error.status=response.status; throw error; }
     return body;
   }
   function decode64(encoded) { const bytes=Uint8Array.from(atob(encoded.replace(/\s/g,'')), c=>c.charCodeAt(0)); return new TextDecoder().decode(bytes); }
   function encode64(text) { const bytes=new TextEncoder().encode(text); let result=''; for (let i=0;i<bytes.length;i+=0x8000) result+=String.fromCharCode(...bytes.subarray(i,i+0x8000)); return btoa(result); }
-  async function readJson(path, ref) { const data=await api(`/contents/${path}?ref=${encodeURIComponent(ref)}`); if (data.encoding!=='base64' || typeof data.content!=='string') throw new Error(`Could not read ${path}`); return JSON.parse(decode64(data.content)); }
+  async function readJson(path, ref) { let data; try { data=await api(`/contents/${path}?ref=${encodeURIComponent(ref)}`); } catch(error) { if(error.status===404) throw new Error('Simlux Studio is not installed on the live website yet. Select Try the demo to explore this preview.'); throw error; } if (data.encoding!=='base64' || typeof data.content!=='string') throw new Error(`Could not read ${path}`); return JSON.parse(decode64(data.content)); }
   $('#connect-form').addEventListener('submit', async e => {
     e.preventDefault(); const button=e.currentTarget.querySelector('button'); button.disabled=true; $('#connect-error').textContent=''; token=$('#token').value.trim();
     try { const user=await api('https://api.github.com/user'); if (user.login.toLowerCase()!=='xdslimguy') throw new Error('Please connect using the XDSlimGuy GitHub account.');
@@ -31,7 +31,7 @@
       [site,catalog]=await Promise.all([readJson('content/site.json',loadedHead), readJson('content/products.json',loadedHead)]);
       if (!site.home || !Array.isArray(catalog.products) || !Array.isArray(catalog.categories)) throw new Error('The website content is not in the expected format.');
       demoMode=false; $('#token').value=''; $('#welcome').hidden=true; $('#editor').hidden=false; tab='home'; render();
-    } catch(err) { token=''; $('#connect-error').textContent=`Could not connect: ${err.message}. Check the token has access to this repository.`; }
+    } catch(err) { token=''; const reason=err.status===404 ? 'GitHub could not find this repository. Check that your token can access XDSlimGuy/simlux-webpage.' : err.message; $('#connect-error').textContent=`Could not connect: ${reason}`; }
     finally { button.disabled=false; }
   });
   $('#try-demo').addEventListener('click', async () => {
