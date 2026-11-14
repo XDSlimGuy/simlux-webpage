@@ -1,0 +1,41 @@
+{
+  "home": {
+    "eyebrow": "LED strips, bulbs, and decorative lighting",
+    "heading": "Affordable LED lighting for polished commercial interiors.",
+    "intro": "Simlux Technology Limited supplies quality LED strips, bulbs, and decorative lighting for offices, retail spaces, hospitality interiors, and indoor decoration projects.",
+    "heroImage": "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1600&q=85",
+    "valueHeading": "Clear choices for teams sourcing LED lighting without overspending.",
+    "categoryHeading": "Core LED ranges for decoration, replacement, and fit-out work.",
+    "featuredHeading": "Start with the most requested lighting formats.",
+    "useHeading": "Lighting that supports the atmosphere of your space.",
+    "useIntro": "From bright office replacements to warm accent lines, Simlux products help companies create practical interiors with a cleaner finished look.",
+    "ctaHeading": "Planning a shop, office, hotel, or interior decoration project?",
+    "ctaText": "Send the product type, quantity, and lighting goal. Simlux can help match a suitable LED option."
+  },
+  "about": {
+    "heading": "Supplying LED lighting that helps interiors look better without stretching the budget.",
+    "intro": "Simlux Technology Limited sells LED strips, bulbs, and decorative lighting products for companies, contractors, shops, hospitality spaces, and indoor decoration projects.",
+    "image": "/about/led-lighting-showroom.png",
+    "imageAlt": "LED lighting showroom with decorative strips, linear profiles, and accent lighting",
+    "focusHeading": "Quality products, affordable cost, clear product choices.",
+    "story1": "Simlux Technology Limited supports customers who need dependable LED products for interior spaces. The company focuses on practical lighting categories that are used often in commercial decoration: flexible LED strips, efficient LED bulbs, and clean decorative lighting options.",
+    "story2": "The goal is simple: make good LED lighting easier to source by balancing product quality, price, and suitability for real installation needs.",
+    "ctaHeading": "Need help matching products to a lighting project?",
+    "ctaText": "Share the installation area, lighting style, and estimated quantity to begin an inquiry."
+  },
+  "productsPage": {
+    "heading": "LED products for practical indoor lighting projects.",
+    "intro": "Browse simple overviews for Simlux LED strips, bulbs, and decorative lighting options. Contact us with your target application and quantity for product matching."
+  },
+  "contact": {
+    "heading": "Tell us what LED product or project you are sourcing.",
+    "intro": "Send your lighting need, product interest, and estimated quantity. Simlux will review your inquiry and follow up by email.",
+    "email": "simlux01@outlook.com",
+    "phone": "+852 93485095",
+    "address": "RM1007, 10F, Sterling CTR, Cheung Yue St., Lai Chi Kok, Hong Kong",
+    "helper": "For a faster quotation, include product type, color temperature, estimated quantity, and where the lighting will be used."
+  },
+  "footer": {
+    "description": "Affordable quality LED lighting for indoor decoration and commercial spaces."
+  }
+}
