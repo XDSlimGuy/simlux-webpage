@@ -16,8 +16,8 @@ export default async function ContactPage({ searchParams }) {
     <>
       <section className="page-hero compact">
         <p className="eyebrow">Contact Simlux</p>
-        <h1>{site.contact.heading}</h1>
-        <p>
+        <h1 data-studio-field="contact.heading">{site.contact.heading}</h1>
+        <p data-studio-field="contact.intro">
           {site.contact.intro}
         </p>
       </section>
@@ -29,23 +29,23 @@ export default async function ContactPage({ searchParams }) {
           <h2>Direct contact</h2>
           <a href={`mailto:${site.contact.email}`}>
             <Mail size={20} aria-hidden="true" />
-            {site.contact.email}
+            <span data-studio-field="contact.email">{site.contact.email}</span>
           </a>
           <a href={`tel:${site.contact.phone.replace(/\s/g, "")}`}>
             <Phone size={20} aria-hidden="true" />
-            {site.contact.phone}
+            <span data-studio-field="contact.phone">{site.contact.phone}</span>
           </a>
           <a href="https://www.simluxled.com">
             <Globe2 size={20} aria-hidden="true" />
             www.simluxled.com
           </a>
-          <p>
+          <p data-studio-field="contact.helper">
             {site.contact.helper}
           </p>
           <div className="contact-muted">
             <span>
               <MapPin size={18} aria-hidden="true" />
-              {site.contact.address}
+              <span data-studio-field="contact.address">{site.contact.address}</span>
             </span>
           </div>
         </aside>
