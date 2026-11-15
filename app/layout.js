@@ -86,16 +86,16 @@ export default function RootLayout({ children }) {
         <footer className="site-footer">
           <div>
             <strong>Simlux Technology Limited</strong>
-            <p>{site.footer.description}</p>
+            <p data-studio-field="footer.description">{site.footer.description}</p>
           </div>
           <div className="footer-links">
             <a href={`mailto:${site.contact.email}`}>
               <Mail size={16} aria-hidden="true" />
-              {site.contact.email}
+              <span data-studio-field="contact.email">{site.contact.email}</span>
             </a>
             <a href={`tel:${site.contact.phone.replace(/\s/g, "")}`}>
               <Phone size={16} aria-hidden="true" />
-              {site.contact.phone}
+              <span data-studio-field="contact.phone">{site.contact.phone}</span>
             </a>
             <a href="https://www.simluxled.com">
               <Globe2 size={16} aria-hidden="true" />

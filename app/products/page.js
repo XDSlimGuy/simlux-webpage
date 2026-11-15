@@ -15,8 +15,8 @@ export default async function ProductsPage({ searchParams }) {
     <>
       <section className="page-hero compact">
         <p className="eyebrow">Product catalog</p>
-        <h1>{site.productsPage.heading}</h1>
-        <p>
+        <h1 data-studio-field="productsPage.heading">{site.productsPage.heading}</h1>
+        <p data-studio-field="productsPage.intro">
           {site.productsPage.intro}
         </p>
       </section>

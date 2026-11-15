@@ -8,6 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://images.unsplash.com; connect-src 'self' https://api.github.com; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
 <title>Simlux Studio</title>
 <link rel="stylesheet" href="/admin/studio.css">
+<script src="/admin/studio-preview.js" defer></script>
 <script src="/admin/studio.js" defer></script>
 </head>
 <body>
@@ -21,7 +22,16 @@
  <div class="editor-head"><div><span class="eyebrow">SIMLUX STUDIO</span><h1>Welcome back.</h1><p>Choose a section to make changes to your site.</p></div><div class="actions"><a class="text-button" href="/" target="_blank" rel="noopener noreferrer">View live site ↗</a><button id="publish" type="button">Publish changes <span>↗</span></button></div></div>
  <div id="status" class="status" role="status" aria-live="polite">Connected to GitHub. Changes remain in this tab until you publish.</div>
  <div class="editor-grid"><nav class="sidebar" aria-label="Editor sections"><span>WEBSITE</span><button class="active" data-tab="home" type="button">01 <b>Home page</b></button><button data-tab="about" type="button">02 <b>About page</b></button><button data-tab="productsPage" type="button">03 <b>Products page</b></button><button data-tab="contact" type="button">04 <b>Contact details</b></button><button data-tab="footer" type="button">05 <b>Footer</b></button><span>CATALOG</span><button data-tab="products" type="button">06 <b>Products</b></button><button data-tab="categories" type="button">07 <b>Categories</b></button><button id="disconnect" class="disconnect" type="button">Sign out</button></nav>
- <section class="workspace"><div class="workspace-title"><div><span class="eyebrow">EDIT YOUR WEBSITE</span><h2 id="section-title">Home page</h2><p id="section-description"></p></div><span class="draft">DRAFT</span></div><div id="fields"></div></section></div>
+ <div class="editor-columns">
+  <section class="workspace" aria-label="Editing controls"><div class="workspace-title"><div><span class="eyebrow">EDIT YOUR WEBSITE</span><h2 id="section-title">Home page</h2><p id="section-description"></p></div><span class="draft">DRAFT</span></div><div id="fields"></div></section>
+  <aside class="preview-panel" aria-label="Website preview">
+   <div class="preview-heading"><div><span class="preview-kicker">Your website</span><h2>Live preview</h2></div><span class="preview-badge">Draft only</span></div>
+   <p class="preview-help">Select an outlined part of the page to edit it. Changes here are private until you publish.</p>
+   <div class="preview-toolbar"><span id="preview-page-label">Home page</span><div class="preview-actions"><div class="viewport-switch" role="group" aria-label="Preview size"><button id="preview-desktop" type="button" aria-pressed="true">Computer</button><button id="preview-mobile" type="button" aria-pressed="false">Phone</button></div><button id="preview-expand" class="preview-expand" type="button" aria-expanded="false">Make bigger</button></div></div>
+   <div id="preview-stage" class="preview-stage"><div id="preview-canvas" class="preview-canvas"><iframe id="site-preview" title="Preview of your website" sandbox="allow-scripts allow-same-origin" tabindex="0"></iframe></div><div id="preview-placeholder" class="preview-placeholder" role="status">Loading your preview…</div></div>
+   <p id="preview-hint" class="preview-hint" aria-live="polite">Choose a field or select an outlined part of the preview.</p>
+  </aside>
+ </div></div>
 </section>
 </main>
 </body></html>

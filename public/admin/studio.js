@@ -11,8 +11,10 @@
   };
   let site, catalog, loadedHead = '', tab = 'home', selected = 0, dirty = false, busy = false;
   let queued = new Map(), previews = new Map();
+  let preview, activeBinding = '', previewUpdatePending = false;
   const setStatus = (text, error=false) => { const node=$('#status'); node.textContent=text; node.classList.toggle('error-state',error); };
-  const markDirty = () => { dirty=true; setStatus('You have unpublished changes. They stay in this tab until you publish.'); };
+  const markDirty = () => { dirty=true; setStatus('You have unpublished changes. They stay in this tab until you publish.'); schedulePreview(); };
+  function schedulePreview() { if(previewUpdatePending)return; previewUpdatePending=true; requestAnimationFrame(()=>{previewUpdatePending=false;preview?.update();}); }
   async function api(path, options={}) {
     const response=await fetch(`/api/studio/${path}`,{...options,headers:{...(options.body ? {'Content-Type':'application/json'} : {})}});
     const body=await response.json().catch(()=>({}));
@@ -24,31 +26,30 @@
       $('#welcome').hidden=true;$('#editor').hidden=false;tab='home';render();
     } catch(error) { if(error.status!==401) $('#connect-error').textContent=error.message; }
   }
-  connect();
-  function formField(parent, object, key, label, kind='text', onUpdate) {
+  function formField(parent, object, key, label, kind='text', onUpdate, binding) {
     const wrap=el('div',null,'field'); const id=`f-${crypto.randomUUID()}`; const caption=el('label',label,'field-label'); caption.htmlFor=id; wrap.append(caption);
     const input=el(kind==='long' ? 'textarea' : 'input'); input.id=id; input.value=object[key] ?? ''; if (kind!=='long') input.type='text';
-    input.addEventListener('input',()=>{object[key]=input.value; markDirty(); if(onUpdate) onUpdate();}); wrap.append(input); parent.append(wrap); return wrap;
+    input.addEventListener('input',()=>{object[key]=input.value; markDirty(); if(onUpdate) onUpdate();}); bindPreviewControl(wrap,input,binding); wrap.append(input); parent.append(wrap); return wrap;
   }
-  function imageField(parent, object, key, label) {
+  function imageField(parent, object, key, label, binding) {
     const wrap=el('div',null,'field'); const title=el('label',label,'field-label'); const id=`img-${crypto.randomUUID()}`; title.htmlFor=id; wrap.append(title);
     const img=el('img',null,'image-preview'); img.alt='Current selected image'; img.src=queued.get(object[key])?.preview || previews.get(object[key]) || object[key] || ''; wrap.append(img);
-    const upload=el('input'); upload.id=id; upload.type='file'; upload.accept='image/jpeg,image/png,image/webp,image/avif'; wrap.append(upload);
+    const upload=el('input'); upload.id=id; upload.type='file'; upload.accept='image/jpeg,image/png,image/webp,image/avif'; bindPreviewControl(wrap,upload,binding); wrap.append(upload);
     const help=el('p','Choose a JPG, PNG, WebP or AVIF image, up to 2 MB. The image is uploaded when you publish.','field-help'); wrap.append(help);
     upload.addEventListener('change',async()=>{ const file=upload.files[0]; if(!file)return; if(!['image/jpeg','image/png','image/webp','image/avif'].includes(file.type) || file.size>2*1024*1024) { setStatus('Choose a JPG, PNG, WebP or AVIF image no larger than 2 MB.',true); upload.value=''; return; }
       try { const encoded=await new Promise((resolve,reject)=>{const reader=new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=()=>reject(new Error('Could not read image')); reader.readAsDataURL(file);});
         const extension={'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/avif':'avif'}[file.type]; const path=`/uploads/${crypto.randomUUID()}.${extension}`; queued.set(path,{base64:encoded.split(',')[1],preview:encoded,type:file.type}); object[key]=path; img.src=encoded; markDirty();
       } catch(err) {setStatus(err.message,true);} }); parent.append(wrap);
   }
-  function listField(parent, object, key, label) { const proxy={value:(object[key]||[]).join('\n')}; const wrap=formField(parent,proxy,'value',label,'long',()=>{object[key]=proxy.value.split('\n').map(x=>x.trim()).filter(Boolean);}); wrap.append(el('p','One item per line.','field-help')); }
+  function listField(parent, object, key, label, binding) { const proxy={value:(object[key]||[]).join('\n')}; const wrap=formField(parent,proxy,'value',label,'long',()=>{object[key]=proxy.value.split('\n').map(x=>x.trim()).filter(Boolean);},binding); wrap.append(el('p','One item per line.','field-help')); }
   function renderProductFields(root,p) {
-    formField(root,p,'name','Product name');
+    formField(root,p,'name','Product name','text',undefined,'product.name');
     const wrap=el('div',null,'field'); const lab=el('label','Category','field-label'); const select=el('select'); select.id=`f-${crypto.randomUUID()}`; lab.htmlFor=select.id; wrap.append(lab,select);
     for(const c of catalog.categories) { const option=el('option',c.name); option.value=c.id; option.selected=c.id===p.category; select.append(option); }
-    select.addEventListener('change',()=>{p.category=select.value;p.categoryName=catalog.categories.find(c=>c.id===select.value)?.name||'';markDirty();}); root.append(wrap);
-    formField(root,p,'summary','Product description','long'); imageField(root,p,'image','Main product image'); listField(root,p,'features','Features'); listField(root,p,'applications','Applications');
-    const specText=Object.entries(p.specs||{}).map(([k,v])=>`${k}: ${v}`).join('\n'); const proxy={value:specText}; const s=formField(root,proxy,'value','Specifications','long',()=>{p.specs=Object.fromEntries(proxy.value.split('\n').map(line=>{let i=line.indexOf(':'); return i<0?[line.trim(),'']:[line.slice(0,i).trim(),line.slice(i+1).trim()];}).filter(([key])=>key));}); s.append(el('p','One per line, using “Label: value”.','field-help'));
-    const title=el('h3','Product image gallery'); root.append(title); const gallery=el('div'); root.append(gallery); (p.gallery||[]).forEach((item,index)=>{ const card=el('div',null,'subsection'); imageField(card,item,'src',`Image ${index+1}`); formField(card,item,'alt','Image description'); const remove=el('button','Remove image','danger'); remove.type='button'; remove.addEventListener('click',()=>{p.gallery.splice(index,1);markDirty();render();});card.append(remove);gallery.append(card);});
+    bindPreviewControl(wrap,select,'product.category'); select.addEventListener('change',()=>{p.category=select.value;p.categoryName=catalog.categories.find(c=>c.id===select.value)?.name||'';markDirty();}); root.append(wrap);
+    formField(root,p,'summary','Product description','long',undefined,'product.summary'); imageField(root,p,'image','Main product image','product.image'); listField(root,p,'features','Features','product.features'); listField(root,p,'applications','Applications','product.applications');
+    const specText=Object.entries(p.specs||{}).map(([k,v])=>`${k}: ${v}`).join('\n'); const proxy={value:specText}; const s=formField(root,proxy,'value','Specifications','long',()=>{p.specs=Object.fromEntries(proxy.value.split('\n').map(line=>{let i=line.indexOf(':'); return i<0?[line.trim(),'']:[line.slice(0,i).trim(),line.slice(i+1).trim()];}).filter(([key])=>key));},'product.specs'); s.append(el('p','One per line, using “Label: value”.','field-help'));
+    const title=el('h3','Product image gallery'); root.append(title); const gallery=el('div'); root.append(gallery); (p.gallery||[]).forEach((item,index)=>{ const card=el('div',null,'subsection'); imageField(card,item,'src',`Image ${index+1}`,`product.gallery.${index}.src`); formField(card,item,'alt','Image description','text',undefined,`product.gallery.${index}.alt`); const remove=el('button','Remove image','danger'); remove.type='button'; remove.addEventListener('click',()=>{p.gallery.splice(index,1);markDirty();render();});card.append(remove);gallery.append(card);});
     const add=el('button','+ Add gallery image','secondary'); add.type='button'; add.addEventListener('click',()=>{p.gallery ||= [];p.gallery.push({src:p.image,alt:p.name});markDirty();render();}); root.append(add);
   }
   function renderProducts(root) {
@@ -59,15 +60,47 @@
     const p=catalog.products[selected], panel=el('div',null,'subsection'); renderProductFields(panel,p); root.append(panel);
     const remove=el('button','Remove this product','danger'); remove.type='button'; remove.addEventListener('click',()=>{if(window.confirm(`Remove “${p.name}” from your website? This takes effect when you publish.`)){catalog.products.splice(selected,1);selected=Math.max(0,selected-1);markDirty();render();}});root.append(remove);
   }
-  function renderCategories(root) { root.append(el('p','Category names and descriptions appear on the website. Products remain linked to their category.','field-help')); catalog.categories.forEach(c=>{const panel=el('div',null,'subsection'); panel.append(el('h3',c.name));formField(panel,c,'name','Category name','text',()=>{catalog.products.filter(p=>p.category===c.id).forEach(p=>p.categoryName=c.name);});formField(panel,c,'summary','Category description','long');root.append(panel);}); }
+  function renderCategories(root) { root.append(el('p','Category names and descriptions appear on the website. Products remain linked to their category.','field-help')); catalog.categories.forEach(c=>{const panel=el('div',null,'subsection'); panel.append(el('h3',c.name));formField(panel,c,'name','Category name','text',()=>{catalog.products.filter(p=>p.category===c.id).forEach(p=>p.categoryName=c.name);},`category.${c.id}.name`);formField(panel,c,'summary','Category description','long',undefined,`category.${c.id}.summary`);root.append(panel);}); }
   function render() {
     document.querySelectorAll('.sidebar [data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab)); const root=$('#fields');root.replaceChildren();
     const info=fieldMap[tab] || (tab==='products'?{label:'Products',description:'Add and update products, specifications, and images.'}:{label:'Categories',description:'Keep your catalog clear and easy to browse.'}); $('#section-title').textContent=info.label;$('#section-description').textContent=info.description;
-    if (tab==='products') return renderProducts(root); if(tab==='categories') return renderCategories(root);
-    for(const [key,label,kind] of info.fields) { if(kind==='image') imageField(root,site[tab],key,label); else formField(root,site[tab],key,label,kind); }
+    if (tab==='products') renderProducts(root); else if(tab==='categories') renderCategories(root);
+    else for(const [key,label,kind] of info.fields) { const binding=`${tab}.${key}`; if(kind==='image') imageField(root,site[tab],key,label,binding); else formField(root,site[tab],key,label,kind,undefined,binding); }
+    preview?.show(tab); if(activeBinding)preview?.select(activeBinding,{scroll:false});
   }
-  document.querySelectorAll('.sidebar [data-tab]').forEach(button=>button.addEventListener('click',()=>{tab=button.dataset.tab;render();}));
-  $('#disconnect').addEventListener('click',async()=>{if(dirty && !confirm('Discard unpublished changes and sign out?'))return; try {await api('logout',{method:'POST'});}catch(error){setStatus(error.message,true);return;}site=null;catalog=null;queued.clear();previews.clear();dirty=false;$('#editor').hidden=true;$('#welcome').hidden=false;});
+  document.querySelectorAll('.sidebar [data-tab]').forEach(button=>button.addEventListener('click',()=>{tab=button.dataset.tab;activeBinding='';preview?.clear();render();}));
+  $('#disconnect').addEventListener('click',async()=>{if(dirty && !confirm('Discard unpublished changes and sign out?'))return; try {await api('logout',{method:'POST'});}catch(error){setStatus(error.message,true);return;}site=null;catalog=null;queued.clear();previews.clear();dirty=false;activeBinding='';preview?.reset();$('#editor').hidden=true;$('#welcome').hidden=false;});
+  function bindPreviewControl(wrap, input, key) {
+    if(!key)return;
+    input.dataset.previewKey=key;
+    input.addEventListener('focus',()=>highlightControl(key,true));
+  }
+  function highlightControl(key,scrollPreview) {
+    activeBinding=key;
+    document.querySelectorAll('.field.is-preview-selected').forEach(node=>node.classList.remove('is-preview-selected'));
+    const input=[...document.querySelectorAll('[data-preview-key]')].find(node=>node.dataset.previewKey===key);
+    input?.closest('.field')?.classList.add('is-preview-selected');
+    preview?.select(key,{scroll:scrollPreview});
+  }
+  function selectFromPreview(key) {
+    preview?.collapse();
+    let nextTab=tab, nextKey=key, nextSelected=selected;
+    if(key.startsWith('catalog.product.')) {
+      const parts=key.split('.'), index=catalog.products.findIndex(product=>product.slug===parts[2]);
+      if(index<0)return; nextTab='products';nextSelected=index;nextKey=`product.${parts[3]}`;
+    } else if(key.startsWith('category.')) nextTab='categories';
+    else if(key.startsWith('product.')) nextTab='products';
+    else { const group=key.split('.')[0]; if(Object.prototype.hasOwnProperty.call(fieldMap,group))nextTab=group; }
+    const changed=nextTab!==tab||nextSelected!==selected;
+    if(changed){tab=nextTab;selected=nextSelected;activeBinding=nextKey;render();}
+    const input=[...document.querySelectorAll('[data-preview-key]')].find(node=>node.dataset.previewKey===nextKey);
+    if(!input){setStatus('This part is not editable here yet.');return;}
+    input.focus({preventScroll:true});
+    input.closest('.field')?.scrollIntoView({block:'center',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    highlightControl(nextKey,changed);
+  }
+  preview=window.SimluxPreview.create({getData:()=>({site,catalog,tab,selected,queued,previews}),onSelect:selectFromPreview});
+  connect();
   window.addEventListener('beforeunload', e=>{if(dirty){e.preventDefault();e.returnValue='';}});
   function usedPaths() {const text=JSON.stringify({site,catalog});return [...queued.keys()].filter(path=>text.includes(JSON.stringify(path)));}
   function validate() {if(!site.contact.email || !site.contact.email.includes('@')) throw new Error('Enter a valid displayed email address.'); if(!catalog.categories.length) throw new Error('At least one category is required.'); for(const p of catalog.products){if(!p.name.trim()||!p.summary.trim()||!p.image) throw new Error('Every product needs a name, description, and main image.'); if(!catalog.categories.some(c=>c.id===p.category)) throw new Error(`Choose a valid category for ${p.name}.`);} for(const c of catalog.categories) if(!c.name.trim()) throw new Error('Category names cannot be empty.');}

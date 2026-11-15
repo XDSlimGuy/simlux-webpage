@@ -58,10 +58,11 @@ export default function ProductsCatalog({ initialCategory }) {
         ))}
       </aside>
 
-      <div className="product-grid catalog" key={activeCategory}>
+      <div className="product-grid catalog" data-studio-catalog="all" key={activeCategory}>
         {visibleProducts.map((product) => (
-          <Link className="product-card" href={`/products/${product.slug}`} key={product.slug}>
+          <Link className="product-card" data-studio-product={product.slug} href={`/products/${product.slug}`} key={product.slug}>
             <Image
+              data-studio-field={`catalog.product.${product.slug}.image`}
               src={product.image}
               alt={`${product.name} product scene`}
               width={900}
@@ -69,9 +70,9 @@ export default function ProductsCatalog({ initialCategory }) {
               sizes="(max-width: 980px) 100vw, 33vw"
             />
             <div>
-              <span>{product.categoryName}</span>
-              <h3>{product.name}</h3>
-              <p>{product.summary}</p>
+              <span data-studio-field={`catalog.product.${product.slug}.category`}>{product.categoryName}</span>
+              <h3 data-studio-field={`catalog.product.${product.slug}.name`}>{product.name}</h3>
+              <p data-studio-field={`catalog.product.${product.slug}.summary`}>{product.summary}</p>
               <strong className="card-link">
                 View details <ArrowRight size={15} aria-hidden="true" />
               </strong>

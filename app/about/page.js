@@ -15,12 +15,13 @@ export default function AboutPage() {
       <section className="page-hero about-hero">
         <div>
           <p className="eyebrow">About Simlux</p>
-          <h1>{site.about.heading}</h1>
-          <p>
+          <h1 data-studio-field="about.heading">{site.about.heading}</h1>
+          <p data-studio-field="about.intro">
             {site.about.intro}
           </p>
         </div>
         <Image
+          data-studio-field="about.image" data-studio-alternate="about.imageAlt"
           src={site.about.image}
           alt={site.about.imageAlt}
           width={1792}
@@ -34,13 +35,13 @@ export default function AboutPage() {
       <section className="section intro-grid">
         <div>
           <p className="eyebrow">Company focus</p>
-          <h2>{site.about.focusHeading}</h2>
+          <h2 data-studio-field="about.focusHeading">{site.about.focusHeading}</h2>
         </div>
         <div className="story-copy">
-          <p>
+          <p data-studio-field="about.story1">
             {site.about.story1}
           </p>
-          <p>
+          <p data-studio-field="about.story2">
             {site.about.story2}
           </p>
         </div>
@@ -73,8 +74,8 @@ export default function AboutPage() {
 
       <section className="cta-strip">
         <div>
-          <h2>{site.about.ctaHeading}</h2>
-          <p>{site.about.ctaText}</p>
+          <h2 data-studio-field="about.ctaHeading">{site.about.ctaHeading}</h2>
+          <p data-studio-field="about.ctaText">{site.about.ctaText}</p>
         </div>
         <Link className="button primary" href="/contact">
           Contact Simlux <ArrowRight size={18} aria-hidden="true" />
