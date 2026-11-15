@@ -9,7 +9,7 @@
     contact: {label:'Contact details',description:'Update the contact page and the details in your footer. This does not change the email address receiving form submissions.',fields:[['heading','Page heading'],['intro','Introduction','long'],['email','Displayed email'],['phone','Displayed phone'],['address','Displayed address','long'],['helper','Quotation advice','long']]},
     footer: {label:'Footer',description:'Edit the short description at the bottom of every page.',fields:[['description','Company description','long']]}
   };
-  let site, catalog, loadedHead = '', tab = 'home', selected = 0, dirty = false, busy = false, demoMode = false;
+  let site, catalog, loadedHead = '', tab = 'home', selected = 0, dirty = false, busy = false;
   let queued = new Map(), previews = new Map();
   const setStatus = (text, error=false) => { const node=$('#status'); node.textContent=text; node.classList.toggle('error-state',error); };
   const markDirty = () => { dirty=true; setStatus('You have unpublished changes. They stay in this tab until you publish.'); };
@@ -21,14 +21,10 @@
   async function connect() {
     try { const data=await api('state'); site=data.site;catalog=data.catalog;loadedHead=data.head;
       if (!site.home || !Array.isArray(catalog.products) || !Array.isArray(catalog.categories)) throw new Error('The website content is not in the expected format.');
-      demoMode=false; $('#welcome').hidden=true;$('#editor').hidden=false;tab='home';render();
+      $('#welcome').hidden=true;$('#editor').hidden=false;tab='home';render();
     } catch(error) { if(error.status!==401) $('#connect-error').textContent=error.message; }
   }
   connect();
-  $('#try-demo').addEventListener('click', async () => {
-    try { const response=await fetch('/admin/demo.json'); if(!response.ok) throw new Error('Demo unavailable'); const data=await response.json(); site=data.site; catalog=data.catalog; demoMode=true; dirty=false; tab='home'; $('#welcome').hidden=true; $('#editor').hidden=false; render(); setStatus('Demo mode: explore and edit sample content. Nothing will be published.'); }
-    catch(err) { $('#connect-error').textContent=err.message; }
-  });
   function formField(parent, object, key, label, kind='text', onUpdate) {
     const wrap=el('div',null,'field'); const id=`f-${crypto.randomUUID()}`; const caption=el('label',label,'field-label'); caption.htmlFor=id; wrap.append(caption);
     const input=el(kind==='long' ? 'textarea' : 'input'); input.id=id; input.value=object[key] ?? ''; if (kind!=='long') input.type='text';
@@ -71,12 +67,12 @@
     for(const [key,label,kind] of info.fields) { if(kind==='image') imageField(root,site[tab],key,label); else formField(root,site[tab],key,label,kind); }
   }
   document.querySelectorAll('.sidebar [data-tab]').forEach(button=>button.addEventListener('click',()=>{tab=button.dataset.tab;render();}));
-  $('#disconnect').addEventListener('click',async()=>{if(dirty && !confirm('Discard unpublished changes and sign out?'))return; if(!demoMode){try {await api('logout',{method:'POST'});}catch(error){setStatus(error.message,true);return;}}site=null;catalog=null;queued.clear();previews.clear();dirty=false;demoMode=false;$('#editor').hidden=true;$('#welcome').hidden=false;});
+  $('#disconnect').addEventListener('click',async()=>{if(dirty && !confirm('Discard unpublished changes and sign out?'))return; try {await api('logout',{method:'POST'});}catch(error){setStatus(error.message,true);return;}site=null;catalog=null;queued.clear();previews.clear();dirty=false;$('#editor').hidden=true;$('#welcome').hidden=false;});
   window.addEventListener('beforeunload', e=>{if(dirty){e.preventDefault();e.returnValue='';}});
   function usedPaths() {const text=JSON.stringify({site,catalog});return [...queued.keys()].filter(path=>text.includes(JSON.stringify(path)));}
   function validate() {if(!site.contact.email || !site.contact.email.includes('@')) throw new Error('Enter a valid displayed email address.'); if(!catalog.categories.length) throw new Error('At least one category is required.'); for(const p of catalog.products){if(!p.name.trim()||!p.summary.trim()||!p.image) throw new Error('Every product needs a name, description, and main image.'); if(!catalog.categories.some(c=>c.id===p.category)) throw new Error(`Choose a valid category for ${p.name}.`);} for(const c of catalog.categories) if(!c.name.trim()) throw new Error('Category names cannot be empty.');}
   $('#publish').addEventListener('click',async()=>{
-    if(busy)return; if(demoMode){setStatus('This is a demo. Sign in to publish real changes.');return;} if(!dirty){setStatus('There are no unpublished changes.');return;}
+    if(busy)return; if(!dirty){setStatus('There are no unpublished changes.');return;}
     try { validate(); } catch(e) {setStatus(e.message,true);return;}
     if(!confirm('Publish these changes to your website? Vercel will build the updated site after the changes are saved.'))return;
     busy=true;const button=$('#publish');button.disabled=true;setStatus('Publishing your changes. Please keep this tab open…');
